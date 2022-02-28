@@ -2,6 +2,12 @@
 
 Emscripten examples with C++
 
+Subpages:
+
+- [C/C++ Binding](binding-c++.md)
+
+## Binding c++
+
 ## Resources
 
 - [Emscritpen](https://emscripten.org/)
@@ -17,6 +23,11 @@ Emscripten examples with C++
 
 - [WebAssembly Concepts](https://developer.mozilla.org/en-US/docs/WebAssembly/Concepts)
 - [torch2424/wasm-by-example](https://github.com/torch2424/wasm-by-example/blob/master/demo-util/instantiateWasm.js)
+
+## Compile and link options
+
+- [Emscripten Compiler Frontend (emcc)](https://emscripten.org/docs/tools_reference/emcc.html)
+- [emscripten-core/emscripten](https://github.com/emscripten-core/emscripten/blob/main/src/settings.js)
 
 ## Install
 

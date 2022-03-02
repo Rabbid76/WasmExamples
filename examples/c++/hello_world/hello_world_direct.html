@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Hello World</title>
+        <style>
+
+        </style>
+    </head>
+
+    <body>
+        <div id="output">loading...</div>
+        <script>
+            async function loadWasm(wasmFilename, callBack, importObject) {
+
+                let response = await fetch(wasmFilename);
+                let bytes = await response.arrayBuffer();
+                let module = await WebAssembly.compile(bytes);
+                let imports = WebAssembly.Module.imports(module);
+                console.log(WebAssembly.Module.exports(module));
+                console.log(imports);
+                importObject = importObject || {};
+                imports.forEach(element => {
+                    if (element.kind == 'function') {
+                        if (!importObject[element.module]) {
+                            console.log('missing module: ' + element.module); 
+                            importObject[element.module] = {}
+                        } 
+                        if (!importObject[element.module][element.name]) {
+                            console.log('missing function: ' + element.module + '.' + element.name); 
+                            importObject[element.module][element.name] = (args) => console.log(args);
+                        } 
+                    }
+                });
+                let instance = await WebAssembly.instantiate(module, importObject);
+                callBack(instance);
+            }
+
+            loadWasm('hello_world_direct.wasm', (instance) => {
+                let result = instance.exports.lerp(1, 2, 0.5);
+                console.log(result);
+                document.getElementById("output").innerHTML = result;
+            });
+
+        </script>
+    </body>
+    
+</html>

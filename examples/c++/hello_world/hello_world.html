@@ -15,30 +15,30 @@
         <div id="run_direct">loading...</div>
         <div id="test_cpp">loading...</div>
         <script>
-                function set_direct(text) {
-                    console.log(text);
-                    document.getElementById("run_direct").innerHTML = text;
+            function set_direct(text) {
+                console.log(text);
+                document.getElementById("run_direct").innerHTML = text;
+            }
+
+            var Module = {
+                onRuntimeInitialized: function() {
+                    let test_text_c = Module.cwrap('get_text_c', 'string', [])();
+                    Module.cwrap('print_text_c', 'null', ['string'])(test_text_c);
+                    document.getElementById("test_c").innerHTML = test_text_c;
+
+                    let test_text_direct = Module.__Z15get_text_directv();
+                    Module.__Z17print_text_directPKc(test_text_direct);
+                    document.getElementById("test_direct").innerHTML = test_text_direct;
+
+                    Module.__Z17run_script_directv();
+                    
+                    let test_text_cpp = Module.get_text();
+                    Module.print_text(test_text_cpp);
+                    document.getElementById("test_cpp").innerHTML = test_text_cpp;
                 }
-
-                var Module = {
-                    onRuntimeInitialized: function() {
-                        let test_text_c = Module.cwrap('get_text_c', 'string', [])();
-                        Module.cwrap('print_text_c', 'null', ['string'])(test_text_c);
-                        document.getElementById("test_c").innerHTML = test_text_c;
-
-                        let test_text_direct = Module.__Z15get_text_directv();
-                        Module.__Z17print_text_directPKc(test_text_direct);
-                        document.getElementById("test_direct").innerHTML = test_text_direct;
-
-                        Module.__Z17run_script_directv();
-                        
-                        let test_text_cpp = Module.get_text();
-                        Module.print_text(test_text_cpp);
-                        document.getElementById("test_cpp").innerHTML = test_text_cpp;
-                    }
-                };
-          </script>
-          <script src="hello_world.js"></script>
+            };
+        </script>
+        <script src="hello_world.js"></script>
     </body>
     
 </html>

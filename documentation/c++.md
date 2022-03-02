@@ -4,7 +4,8 @@ Emscripten examples with C++
 
 Subpages:
 
-- [C/C++ Binding](binding-c++.md)
+- [C/C++ binding](emscripten/binding-c++.md)
+- [C/C++ language features](emscripten/c++_language_features.md)
 
 ## Binding c++
 
@@ -16,7 +17,6 @@ Subpages:
 - [Emscripten/HTML integration tips](https://floooh.github.io/2017/02/22/emsc-html.html)
 - [WebAssembly Experiments](https://floooh.github.io/2016/03/17/oryol-webassembly.html)
 - [WebAssembly Demystified](https://floooh.github.io/2017/06/09/webassembly-demystified.html)
-- [10 simple diet tricks for asm.js](https://floooh.github.io/2016/08/27/asmjs-diet.html)
 - [Alon Zakai — Shipping Tiny WebAssembly Builds](https://www.youtube.com/watch?v=_lLqZR4ufSI)
 
 ## Instantiate WASM

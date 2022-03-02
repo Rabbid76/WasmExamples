@@ -38,9 +38,11 @@
             }
 
             loadWasm('hello_world_direct.wasm', (instance) => {
-                let result = instance.exports.lerp(1, 2, 0.5);
-                console.log(result);
-                document.getElementById("output").innerHTML = result;
+                let result1 = instance.exports.lerp1(1, 2, 0.5);
+                console.log(result1);
+                let result2 = instance.exports._Z5lerp2fff(2, 3, 0.4);
+                console.log(result2);
+                document.getElementById("output").innerHTML = result1 + ", " + result2;
             });
 
         </script>

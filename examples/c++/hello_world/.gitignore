@@ -2,4 +2,5 @@ bin
 /*.wasm
 /hello_world.js
 /hello_world_cwrap.js
+/hello_world_embind.js
 

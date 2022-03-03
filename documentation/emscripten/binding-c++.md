@@ -105,12 +105,48 @@ var Module = {
     }
 };
 </script>
-<script src="hello_world_cwrap.js"></script>
+<script src="hello_world.js"></script>
 ```
 
 ## Embind
 
 [Embind](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html)
+
+C++ functions and static methods can be bound using the [`EMSCRIPTEN_BINDINGS`](https://emscripten.org/docs/api_reference/bind.h.html#_CPPv419EMSCRIPTEN_BINDINGS4name) macro.
+Linking against the _embind_ library is enabled with the `-lembind` option or the deprecated `--bind` option.
+
+_hello_world.cpp_:
+
+```c++
+#include <emscripten.h>
+#include <emscripten/bind.h>
+#include <string>
+#include <iostream>
+
+std::string getText() {
+   return "Hello world";
+}
+
+EMSCRIPTEN_BINDINGS(my_module) {
+   emscripten::function("getText", &getText);
+}
+```
+
+```none
+emcc --no-entry -lembind hello_world.cpp -o hello_world.js -s WASM=1
+```
+
+```js
+<script>
+var Module = {
+    onRuntimeInitialized: function() {
+        let result = Module.getText();
+        console.log(result);
+    }
+};
+</script>
+<script src="hello_world.js"></script>
+```
 
 ## WebIDL
 

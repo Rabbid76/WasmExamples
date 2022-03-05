@@ -3,4 +3,6 @@ bin
 /hello_world.js
 /hello_world_cwrap.js
 /hello_world_embind.js
+/hello_world_webidl.js
+/hello_world_webidl_.*
 

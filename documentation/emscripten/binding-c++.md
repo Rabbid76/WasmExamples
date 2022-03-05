@@ -96,7 +96,7 @@ emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_
 When the _wasm_ is completely initialized the [`onRuntimeInitialized`](https://emscripten.org/docs/api_reference/module.html#Module.onRuntimeInitialized) callback function is invoked.
 The runtime functions are accessible via the `Module` object.
 
-```js
+```html
 <script>
 var Module = {
     onRuntimeInitialized: function() {
@@ -136,7 +136,7 @@ EMSCRIPTEN_BINDINGS(my_module) {
 emcc --no-entry -lembind hello_world.cpp -o hello_world.js -s WASM=1
 ```
 
-```js
+```html
 <script>
 var Module = {
     onRuntimeInitialized: function() {
@@ -150,4 +150,63 @@ var Module = {
 
 ## WebIDL
 
-[WebIDL](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html#webidl-binder)
+[WebIDL](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html#webidl-binder)  
+
+Create the c++ code and a corresponding WebIDL interface ([Web IDL Standard](https://webidl.spec.whatwg.org/)).
+The C++ and WebIdl types must match ([WebIDL types](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html#webidl-types)).
+
+_hello_world.h_
+
+```c++
+#include <string>
+#include <iostream>
+
+class Foo {
+public:
+    char* getText() {
+        return (char*)"Hello world";
+    }
+};
+```
+
+_hello_world.idl_
+
+```idl
+interface Foo {
+    void Foo();
+    DOMString getText();
+};
+```
+
+Use the [_tools/webidl_binder.py_](https://github.com/emscripten-core/emscripten/blob/main/tools/webidl_binder.py) to generate the corresponding _.cpp_ and _.js_ interfaces.
+
+```none
+python3 webidl_binder.py hello_world.idl hello_world_interface
+```
+
+Use inter face files (_hello_world_interface.cpp_ _hello_world_interface.js_) to generate the _wasm_.
+`--pre-js <file>` and `--post-js <file>` can be used to specify content that will be added before and added after the generated _js_ code.
+
+_hello_world.cpp_
+
+```cpp
+#include "hello_world.h"
+#include "hello_world_interface.cpp"
+```
+
+```none
+emcc --no-entry hello_world.cpp -o _hello_world.js -s WASM=1 --post-js hello_world_interface.js
+```
+
+```html
+<script>
+var Module = {
+    onRuntimeInitialized: function() {
+        var foo = new Module.Foo();
+        let result = foo.getText();
+        console.log(result);
+    }
+};
+</script>
+<script src="hello_world.js"></script>
+```

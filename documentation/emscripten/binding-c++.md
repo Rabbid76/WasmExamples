@@ -1,5 +1,7 @@
 # Binding C/C++
 
+Interaction between C++ and JavaScript
+
 [Interacting with code](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-binding-cpp)
 
 ## Using direct function calls
@@ -33,7 +35,7 @@ extern "C" {
 emcc --no-entry lerp.cpp -o lerp.wasm -s WASM=1 -s EXPORTED_FUNCTIONS=_lerp1
 ```
 
-Load the _wasm_ and compile and instantiate the WebAssembly code with [WebAssembly.instantiate()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate) or [WebAssembly.instantiateStreaming()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming): 
+Load the _wasm_ and compile and instantiate the WebAssembly code with [WebAssembly.instantiate()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate) or [WebAssembly.instantiateStreaming()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming):
 
 ```js
 async function loadWasm(wasmFilename, callBack, importObject) {
@@ -155,7 +157,7 @@ var Module = {
 Create the c++ code and a corresponding WebIDL interface ([Web IDL Standard](https://webidl.spec.whatwg.org/)).
 The C++ and WebIdl types must match ([WebIDL types](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html#webidl-types)).
 
-_hello_world.h_
+_hello_world.h_:
 
 ```c++
 #include <string>
@@ -169,7 +171,7 @@ public:
 };
 ```
 
-_hello_world.idl_
+_hello_world.idl_:
 
 ```idl
 interface Foo {
@@ -187,7 +189,7 @@ python3 webidl_binder.py hello_world.idl hello_world_interface
 Use inter face files (_hello_world_interface.cpp_ _hello_world_interface.js_) to generate the _wasm_.
 `--pre-js <file>` and `--post-js <file>` can be used to specify content that will be added before and added after the generated _js_ code.
 
-_hello_world.cpp_
+_hello_world.cpp_:
 
 ```cpp
 #include "hello_world.h"
@@ -209,4 +211,44 @@ var Module = {
 };
 </script>
 <script src="hello_world.js"></script>
+```
+
+## Modularize
+
+[How can I tell when the page is fully loaded and it is safe to call compiled functions?](https://emscripten.org/docs/getting_started/FAQ.html#how-can-i-tell-when-the-page-is-fully-loaded-and-it-is-safe-to-call-compiled-functions)
+
+| `MODULARIZE=1`       | Wraps the code in a function that returns a promise. |
+| `EXPORT_NAME="name"` | Specifies the export name of the module.             |
+
+_hello_world.cpp_:
+
+```c++
+#include <emscripten.h>
+#include <emscripten/bind.h>
+#include <string>
+#include <iostream>
+
+std::string getText() {
+   return "Hello world";
+}
+
+EMSCRIPTEN_BINDINGS(my_module) {
+   emscripten::function("getText", &getText);
+}
+```
+
+```none
+emcc --no-entry --bind hello_world.cpp" -o hello_world.js -s WASM=1 -s MODULARIZE=1 -s EXPORT_NAME="createMyModule"
+```
+
+_hello_world.html_:
+
+```html
+<script src="hello_world_modularize.js"></script>
+<script>
+createMyModule(/* optional default settings */).then(function(MyModule) {
+    let result = MyModule.getText();
+    console.log(result);
+});
+</script>
 ```

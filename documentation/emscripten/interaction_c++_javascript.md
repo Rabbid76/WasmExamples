@@ -1,10 +1,8 @@
-# Binding C/C++
-
-Interaction between C++ and JavaScript
+# Interaction between C/C++ and JavaScript
 
 [Interacting with code](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-binding-cpp)
 
-## Using direct function calls
+## C/C++ code “directly”
 
 [Call compiled C/C++ code “directly” from JavaScript](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#call-compiled-c-c-code-directly-from-javascript)
 
@@ -71,7 +69,7 @@ loadWasm('lerp.wasm', (instance) => {
 });
 ```
 
-## Using ccall or cwrap
+## Calling C++ with ccall or cwrap
 
 [Calling compiled C functions from JavaScript using ccall/cwrap](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-compiled-c-functions-from-javascript-using-ccall-cwrap)
 
@@ -106,6 +104,41 @@ var Module = {
         console.log(result);
     }
 };
+</script>
+<script src="hello_world.js"></script>
+```
+
+## Inline JavaScript in C/C++
+
+`emscripten_run_script()` can be used to run inline JavaScript code in C++ or to call JavaScript functions.
+
+_hello_world.cpp_:
+
+```c++
+#include <emscripten.h>
+
+extern "C" {
+
+    EMSCRIPTEN_KEEPALIVE void run() {
+        emscripten_run_script("callback(\"Hello World\")");
+    }
+}
+```  
+
+```none
+emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap
+```
+
+```html
+<script>
+var Module = {
+    onRuntimeInitialized: function() {
+        let result = Module.ccall('run', null, []);
+    }
+};
+function callback(message) {
+    console.log(message);
+}
 </script>
 <script src="hello_world.js"></script>
 ```
@@ -217,6 +250,8 @@ var Module = {
 
 [How can I tell when the page is fully loaded and it is safe to call compiled functions?](https://emscripten.org/docs/getting_started/FAQ.html#how-can-i-tell-when-the-page-is-fully-loaded-and-it-is-safe-to-call-compiled-functions)
 
+| option               | description                                          |
+|----------------------|------------------------------------------------------|
 | `MODULARIZE=1`       | Wraps the code in a function that returns a promise. |
 | `EXPORT_NAME="name"` | Specifies the export name of the module.             |
 

@@ -4,7 +4,7 @@ Emscripten examples with C++
 
 Subpages:
 
-- [C/C++ binding](emscripten/binding-c++.md)
+- [Interaction between C/C++ and JavaScript](emscripten/interaction_c++_javascript.md)
 - [C/C++ language features](emscripten/c++_language_features.md)
 
 ## Binding c++

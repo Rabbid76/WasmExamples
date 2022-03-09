@@ -2,7 +2,7 @@
 
 [Interacting with code](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-binding-cpp)
 
-## C/C++ code “directly”
+## Call C/C++ code “directly”
 
 [Call compiled C/C++ code “directly” from JavaScript](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#call-compiled-c-c-code-directly-from-javascript)
 
@@ -110,6 +110,8 @@ var Module = {
 
 ## Inline JavaScript in C/C++
 
+[Calling JavaScript from C/C++](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-call-javascript-from-native)
+
 `emscripten_run_script()` can be used to run inline JavaScript code in C++ or to call JavaScript functions.
 
 _hello_world.cpp_:
@@ -139,6 +141,54 @@ var Module = {
 function callback(message) {
     console.log(message);
 }
+</script>
+<script src="hello_world.js"></script>
+```
+
+## C API implemented in JavaScript
+
+[Implement a C API in JavaScript](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#implement-a-c-api-in-javascript)  
+[JavaScript limits in library files](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#javascript-limits-in-library-files)
+
+Define the C API interface as `extern` and implement the javascript function in a separate file. Bind the javascript implementation file using the `--js-library <lib>` option when building the wasm.
+
+_hello_world.cpp_:
+
+```c++
+#include <emscripten.h>
+
+extern "C" {
+
+    extern void capi_callback();
+
+    EMSCRIPTEN_KEEPALIVE void run() {
+        capi_callback();
+    }
+}
+```
+
+_hello_world_library.js_:
+
+```js
+mergeInto(LibraryManager.library, {
+    capi_callback: function() {
+        let message = "Hello World";
+        console.log(message);
+    },
+});
+```
+
+```none
+emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap --js-library _hello_world_library.js
+```
+
+```html
+<script>
+var Module = {
+    onRuntimeInitialized: function() {
+        let result = Module.ccall('run', null, []);
+    }
+};
 </script>
 <script src="hello_world.js"></script>
 ```

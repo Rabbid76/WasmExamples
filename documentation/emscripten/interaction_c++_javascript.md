@@ -145,7 +145,7 @@ function callback(message) {
 <script src="hello_world.js"></script>
 ```
 
-## C API implemented in JavaScript
+## C API implemented in JavaScript (JavaScript library)
 
 [Implement a C API in JavaScript](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#implement-a-c-api-in-javascript)  
 [JavaScript limits in library files](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#javascript-limits-in-library-files)
@@ -180,6 +180,44 @@ mergeInto(LibraryManager.library, {
 
 ```none
 emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap --js-library _hello_world_library.js
+```
+
+```html
+<script>
+var Module = {
+    onRuntimeInitialized: function() {
+        let result = Module.ccall('run', null, []);
+    }
+};
+</script>
+<script src="hello_world.js"></script>
+```
+
+## JavaScript function inside c++ (`EM_JS`)
+
+[`EM_JS`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-call-javascript-from-native)s implementation is essentially a shorthand for implementing a JavaScript library.
+
+_hello_world.cpp_:
+
+```c++
+#include <emscripten.h>
+
+EM_JS(void, em_js_callback, (), {
+    let message = "Hello World";
+    console.log(message);
+    document.getElementById("output").innerHTML = message;
+});
+
+extern "C" {
+    
+    EMSCRIPTEN_KEEPALIVE void run() {
+        em_js_callback();
+    }
+}
+```
+
+```none
+emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap
 ```
 
 ```html

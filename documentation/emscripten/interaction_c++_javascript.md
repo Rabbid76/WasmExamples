@@ -145,6 +145,42 @@ function callback(message) {
 <script src="hello_world.js"></script>
 ```
 
+## Inline assembly code (`EM_ASM`)
+
+With [`EM_ASM`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-call-javascript-from-native), Emscripten will execute the two lines of JavaScript as if they appeared directly in the generated code.
+
+_hello_world.cpp_:
+
+```c++
+#include <emscripten.h>
+
+extern "C" {
+    
+    EMSCRIPTEN_KEEPALIVE void run() {
+        EM_ASM(
+            let message = "Hello World";
+            console.log(message);
+            document.getElementById("output").innerHTML = message;
+        );
+    }
+}
+```
+
+```none
+emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap,ccall
+```
+
+```html
+<script>
+var Module = {
+    onRuntimeInitialized: function() {
+        let result = Module.ccall('run', null, []);
+    }
+};
+</script>
+<script src="hello_world.js"></script>
+```
+
 ## C API implemented in JavaScript (JavaScript library)
 
 [Implement a C API in JavaScript](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#implement-a-c-api-in-javascript)  
@@ -217,7 +253,7 @@ extern "C" {
 ```
 
 ```none
-emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap
+emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap,ccall
 ```
 
 ```html

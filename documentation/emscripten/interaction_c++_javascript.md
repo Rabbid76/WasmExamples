@@ -160,7 +160,6 @@ extern "C" {
         EM_ASM(
             let message = "Hello World";
             console.log(message);
-            document.getElementById("output").innerHTML = message;
         );
     }
 }
@@ -241,7 +240,6 @@ _hello_world.cpp_:
 EM_JS(void, em_js_callback, (), {
     let message = "Hello World";
     console.log(message);
-    document.getElementById("output").innerHTML = message;
 });
 
 extern "C" {
@@ -261,6 +259,48 @@ emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_
 var Module = {
     onRuntimeInitialized: function() {
         let result = Module.ccall('run', null, []);
+    }
+};
+</script>
+<script src="hello_world.js"></script>
+```
+
+## JavaScript function pointers
+
+[Calling JavaScript functions as function pointers from C](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-call-function-pointers-from-c)
+
+The `addFunction` Emscripten JsvaScript runtime function returns an integer value that represents a function pointer.
+Building with `-s ALLOW_TABLE_GROWTH` allows new functions to be added to the function table.
+
+_hello_world.cpp_:
+
+```c++
+#include <stdlib.h>
+#include <emscripten.h>
+
+extern "C" {
+    
+    EMSCRIPTEN_KEEPALIVE void run(char *callback_ptr) {
+        int fp = atoi(callback_ptr);
+        void (*f)(int) = reinterpret_cast<void (*)(int)>(fp);
+        f(0);
+    }
+}
+```
+
+```none
+emcc --no-entry hello_world.cpp -o hello_world.js -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap,ccall,addFunction -s ALLOW_TABLE_GROWTH
+```
+
+```html
+<script>
+var Module = {
+    onRuntimeInitialized: function() {
+        var newFuncPtr = Module.addFunction(function(num) {
+            let message = num + ": Hello World";
+            console.log(message);
+        }, 'vi');
+        let result = Module.ccall('run', null, ['string'], [newFuncPtr.toString()]);
     }
 };
 </script>

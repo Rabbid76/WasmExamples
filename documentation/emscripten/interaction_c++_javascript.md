@@ -347,6 +347,62 @@ var Module = {
 <script src="hello_world.js"></script>
 ```
 
+## Using `val`
+
+[Using val to transliterate JavaScript to C++](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html#embind-val-guide)
+
+> Embind provides a C++ class, `emscripten::val`, which you can use to transliterate JavaScript code to C++.
+> Using `val` you can call JavaScript objects from your C++, read and write their properties, or coerce them to C++ values like a `bool`, `int`, or `std::string`
+
+_hello_world.cpp_:
+
+```c++
+#include <emscripten/bind.h>
+#include <emscripten/val.h>
+#include <stdio.h>
+
+void run() {
+   emscripten::val moduleContext = emscripten::val::global("moduleContext");
+   if (!moduleContext.as<bool>()) {
+      printf("No moduleContext\n");
+      return;
+   }
+   printf("Got moduleContext\n");
+
+   moduleContext.set("text", emscripten::val("Hello world"));
+   moduleContext.call<void>("setText", 0);
+   printf("All done!\n");
+}
+
+EMSCRIPTEN_BINDINGS(my_module) {
+   emscripten::function("run", &run);
+}
+
+```
+
+```none
+emcc --no-entry -lembind hello_world.cpp -o hello_world.js -s WASM=1
+```
+
+```html
+<script>
+var moduleContext = {
+    text: "",
+    setText: function() {
+        console.log(this.text);
+        document.getElementById("output").innerHTML = this.text;
+    }
+}; 
+var Module = {
+    onRuntimeInitialized: function() {
+        Module.run();
+    }
+};
+</script>
+<script src="hello_world.js"></script>
+```
+
+
 ## WebIDL
 
 [WebIDL](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html#webidl-binder)  

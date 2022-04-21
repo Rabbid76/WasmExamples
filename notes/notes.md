@@ -1,5 +1,7 @@
 # Notes
 
+[WebAssembly Interface Types: Interoperate with All the Things!](https://hacks.mozilla.org/2019/08/webassembly-interface-types/)
+
 ## Rust
 
 [How do I use a C library in a Rust library compiled to WebAssembly?](https://stackoverflow.com/questions/51666736/how-do-i-use-a-c-library-in-a-rust-library-compiled-to-webassembly/51804070#51804070)

@@ -1,6 +1,7 @@
 # Interaction between C/C++ and JavaScript
 
-[Interacting with code](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-binding-cpp)
+[Interacting with code](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-binding-cpp)  
+[API Reference](https://emscripten.org/docs/api_reference/index.html)  
 
 ## Call C/C++ code “directly”
 
@@ -69,7 +70,7 @@ loadWasm('lerp.wasm', (instance) => {
 });
 ```
 
-## Calling C++ with ccall or cwrap
+## Calling C++ with `ccall` or `cwrap`
 
 [Calling compiled C functions from JavaScript using ccall/cwrap](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-compiled-c-functions-from-javascript-using-ccall-cwrap)
 
@@ -495,8 +496,6 @@ EMSCRIPTEN_BINDINGS(my_module) {
 ```none
 emcc --no-entry --bind hello_world.cpp" -o hello_world.js -s WASM=1 -s MODULARIZE=1 -s EXPORT_NAME="createMyModule"
 ```
-
-_hello_world.html_:
 
 ```html
 <script src="hello_world_modularize.js"></script>

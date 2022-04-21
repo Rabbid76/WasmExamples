@@ -2,6 +2,8 @@
 #include <emscripten/val.h>
 #include <stdio.h>
 
+
+
 void run() {
    emscripten::val moduleContext = emscripten::val::global("moduleContext");
    if (!moduleContext.as<bool>()) {

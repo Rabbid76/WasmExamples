@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Array - memory view</title>
+        <style>
+
+        </style>
+    </head>
+
+    <body>
+        <div id="output">loading...</div>
+        <script>
+            var Module = {
+                onRuntimeInitialized: function() {
+                    const floatArray = new Float32Array([1.1, 2.2, 3.3, 4.4, 5.5]);
+                    Module.passArray(floatArray);
+                    document.getElementById("output").innerHTML = 'run complete';
+                }
+            };
+        </script>
+        <script src="array_memory_view_embind.js"></script>
+    </body>
+    
+</html>

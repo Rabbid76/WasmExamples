@@ -1,3 +1,5 @@
+#Set-PSDebug -Trace 1
+
 $source = "hello_world_em_js"
 
 emcc --no-entry -O0 "$($source).cpp" -o "$($source).js" -s WASM=1 -s EXPORTED_RUNTIME_METHODS=cwrap,ccall

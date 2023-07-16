@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.excalidraw": "json",
+        "*.excalidrawlib": "json",
+        "*.js": "javascriptreact",
+        "vector": "cpp",
+        "xstring": "cpp",
+        "xutility": "cpp"
+    }
+}

@@ -1,6 +1,6 @@
 #Set-PSDebug -Trace 1
 
-$source = "hello_world_embind"
+$source = "array_memory_view_embind"
 
 emcc --no-entry --bind -O0 "$($source).cpp" -o "$($source).js" -s WASM=1
 

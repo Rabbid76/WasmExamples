@@ -1,3 +1,5 @@
+#Set-PSDebug -Trace 1
+
 $emscripten_tools = "C:/source/emscripten/emsdk/upstream/emscripten/tools"
 $source = "hello_world_webidl"
 $target = "hello_world_webidl_"

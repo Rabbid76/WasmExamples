@@ -1,4 +1,6 @@
-$source = "hello_world_test1"
+#Set-PSDebug -Trace 1
+
+$source = "array_memory_view_cwrap"
 
 #new-item "./bin/$($source)" -force -itemtype directory | Out-Null
 

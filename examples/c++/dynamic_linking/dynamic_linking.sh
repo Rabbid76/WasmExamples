@@ -14,9 +14,7 @@ $emscripten_folder/emcc \
     -s SIDE_MODULE=1  
 
 $emscripten_folder/emcc \
-    --no-entry \
     --bind \
-    -O0 \
     hello.wasm \
     hello_world.wasm \
     $source.cpp \

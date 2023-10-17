@@ -6,8 +6,8 @@
 std::string testTryCatch() {
    std::cout << "Hello world - before try" << std::endl;
    try {
-      std::cout << "Hello world in try" << std::endl;
-      throw;
+      std::cout << "Hello world - in try" << std::endl;
+      throw 1;
    } catch (...) {
       std::cout << "Hello world - in catch" << std::endl;
    }

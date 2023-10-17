@@ -11,16 +11,14 @@
 
     <body>
         <div id="output">loading...</div>
+        <script src="hello_world_wasm_exception_modularize.js"></script>
         <script>
-            var Module = {
-                onRuntimeInitialized: function() {
-                    let result = Module.testTryCatch();
-                    console.log(result);
-                    document.getElementById("output").innerHTML = result;
-                }
-            };
+            createMyModule(/* optional default settings */).then(function(MyModule) {
+                let result = MyModule.testTryCatch();
+                console.log(result);
+                document.getElementById("output").innerHTML = result;
+            });
         </script>
-        <script src="hello_world_wasm_exception.js"></script>
     </body>
     
 </html>
